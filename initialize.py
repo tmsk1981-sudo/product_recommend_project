@@ -31,7 +31,14 @@ class EnsembleRetriever:
         """各retrieverから結果を取得してマージ"""
         all_docs = []
         for retriever, weight in zip(self.retrievers, self.weights):
-            docs = retriever.get_relevant_documents(query)
+            # get_relevant_documentsまたはinvokeメソッドを使用
+            if hasattr(retriever, 'get_relevant_documents'):
+                docs = retriever.get_relevant_documents(query)
+            elif hasattr(retriever, 'invoke'):
+                docs = retriever.invoke(query)
+            else:
+                docs = []
+            
             # 重みに応じて結果を追加
             for doc in docs:
                 all_docs.append((doc, weight))
@@ -49,6 +56,14 @@ class EnsembleRetriever:
                 result.append(doc)
         
         return result[:ct.TOP_K]
+    
+    def invoke(self, query):
+        """LangChain互換のinvokeメソッド"""
+        if isinstance(query, str):
+            return self.get_relevant_documents(query)
+        elif isinstance(query, dict):
+            return self.get_relevant_documents(query.get("query", ""))
+        return self.get_relevant_documents(str(query))
 
 
 ############################################################
