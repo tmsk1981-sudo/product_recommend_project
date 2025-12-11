@@ -48,6 +48,21 @@ def display_conversation_log():
                 display_product(message["content"])
 
 
+def display_stock_status(stock_status):
+    """
+    在庫状況の表示
+
+    Args:
+        stock_status: 在庫状況 ("あり", "残りわずか", "なし")
+    """
+    if stock_status == "あり":
+        st.info(f"{ct.STOCK_AVAILABLE_ICON} {ct.STOCK_AVAILABLE_MESSAGE}")
+    elif stock_status == "残りわずか":
+        st.warning(f"{ct.STOCK_LOW_ICON} {ct.STOCK_LOW_MESSAGE}")
+    elif stock_status == "なし":
+        st.error(f"{ct.STOCK_OUT_ICON} {ct.STOCK_OUT_MESSAGE}")
+
+
 def display_product(result):
     """
     商品情報の表示
@@ -68,6 +83,9 @@ def display_product(result):
             商品名：{product['name']}（商品ID: {product['id']}）\n
             価格：{product['price']}
     """)
+
+    # 在庫状況の表示
+    display_stock_status(product.get('stock_status', 'あり'))
 
     # 「商品カテゴリ」と「メーカー」と「ユーザー評価」
     st.code(f"""

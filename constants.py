@@ -16,6 +16,16 @@ ERROR_ICON = ":material/error:"
 CHAT_INPUT_HELPER_TEXT = "こちらからお探しの商品の特徴や名前を入力してください。"
 SPINNER_TEXT = "レコメンドする商品の検討中..."
 
+# 在庫状況アイコン
+STOCK_AVAILABLE_ICON = ":material/check_circle:"
+STOCK_LOW_ICON = ":material/warning:"
+STOCK_OUT_ICON = ":material/cancel:"
+
+# 在庫状況メッセージ
+STOCK_AVAILABLE_MESSAGE = "在庫あります。"
+STOCK_LOW_MESSAGE = "ご好評につき、在庫が残りわずかです。購入をご希望の場合、お早めにご注文をおすすめいたします。"
+STOCK_OUT_MESSAGE = "申し訳ございませんが、本商品は在庫切れとなっております。入荷までもうしばらくお待ちください。"
+
 
 # ==========================================
 # ログ出力系
