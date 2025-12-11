@@ -17,9 +17,38 @@ from langchain_community.document_loaders.csv_loader import CSVLoader
 from langchain_openai import OpenAIEmbeddings
 from langchain_community.vectorstores import Chroma
 from langchain_community.retrievers import BM25Retriever
-from langchain.retrievers import EnsembleRetriever
 import utils
 import constants as ct
+
+# EnsembleRetrieverの簡易実装
+class EnsembleRetriever:
+    """複数のretrieverを組み合わせて結果を返すRetriever"""
+    def __init__(self, retrievers, weights):
+        self.retrievers = retrievers
+        self.weights = weights
+    
+    def get_relevant_documents(self, query):
+        """各retrieverから結果を取得してマージ"""
+        all_docs = []
+        for retriever, weight in zip(self.retrievers, self.weights):
+            docs = retriever.get_relevant_documents(query)
+            # 重みに応じて結果を追加
+            for doc in docs:
+                all_docs.append((doc, weight))
+        
+        # スコアでソート（重みが高い順）
+        all_docs.sort(key=lambda x: x[1], reverse=True)
+        
+        # ドキュメントのみを返す（重複を除去）
+        seen = set()
+        result = []
+        for doc, _ in all_docs:
+            content = doc.page_content
+            if content not in seen:
+                seen.add(content)
+                result.append(doc)
+        
+        return result[:ct.TOP_K]
 
 
 ############################################################
